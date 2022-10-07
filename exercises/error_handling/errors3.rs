@@ -4,21 +4,33 @@
 // Why not? What should we do to fix it?
 // Execute `rustlings hint errors3` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
 
-use std::num::ParseIntError;
+use std::fmt;
+use std::{num::{ParseIntError}, error};
 
-fn main() {
+
+#[derive(Debug, Clone)]
+struct InsufficientFounds;
+
+impl fmt::Display for InsufficientFounds {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "invalid first item to double")
+    }
+}
+
+impl error::Error for InsufficientFounds {}
+fn main() -> Result<(), Box<dyn error::Error> >{
     let mut tokens = 100;
     let pretend_user_input = "8";
 
     let cost = total_cost(pretend_user_input)?;
 
     if cost > tokens {
-        println!("You can't afford that many!");
+        Err(InsufficientFounds.into())
     } else {
         tokens -= cost;
         println!("You now have {} tokens.", tokens);
+        Ok(())
     }
 }
 
